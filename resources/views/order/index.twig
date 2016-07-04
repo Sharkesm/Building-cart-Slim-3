@@ -1,0 +1,128 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+  <form action="{{ path_for('order.create') }}" method="post">
+      <div class="row">
+          <div class="col-md-8">
+                <div class="col-md-6">
+                  <h3>Your details</h3>
+                  <hr>
+                  <div class="form-group {% if errors.email %} has-error {% endif%}">
+                    <label for="email">Email</label>
+
+                    {% if errors.email %}
+                    <span class="help-block">
+                       {{ errors.email | first }}
+                    </span>
+                    {% endif %}
+
+                    <input type="email" name="email" id="email" class="form-control" value="{{ old.email }}">
+                  </div>
+
+                  <div class="form-group {% if errors.name %} has-error {% endif%}">
+                    <label for="name">Name</label>
+
+                    {% if errors.name %}
+                    <span class="help-block">
+                       {{ errors.name | first }}
+                    </span>
+                    {% endif %}
+
+                    <input type="text" name="name" id="name" class="form-control" value="{{ old.name }}">
+                  </div>
+
+                </div>
+                <div class="col-md-6">
+                  <h3>Shipping details</h3>
+                  <hr>
+                  <div class="form-group {% if errors.address1 %} has-error {% endif%}">
+                    <label for="address1">Address line 1</label>
+
+                    {% if errors.address1 %}
+                    <span class="help-block">
+                       {{ errors.address1 | first }}
+                    </span>
+                    {% endif %}
+
+                    <input type="text" name="address1" id="address1" class="form-control" value="{{ old.address1 }}">
+                  </div>
+
+                  <div class="form-group {% if errors.address2 %} has-error {% endif%}">
+                    <label for="address2">Address line 2</label>
+
+                    {% if errors.address2 %}
+                    <span class="help-block">
+                       {{ errors.address2 | first }}
+                    </span>
+                    {% endif %}
+
+                    <input type="text" name="address2" id="address2" class="form-control" placeholder="Optional" value="{{ old.address2 }}">
+                  </div>
+                  <div class="form-group {% if errors.city %} has-error {% endif%}">
+                    <label for="city">Home city</label>
+
+                    {% if errors.city %}
+                    <span class="help-block">
+                       {{ errors.city | first }}
+                    </span>
+                    {% endif %}
+
+                    <input type="text" name="city" id="city" class="form-control" value="{{ old.city }}">
+                  </div>
+
+
+                  <div class="form-group {% if errors.postal_code %} has-error {% endif%}">
+                    <label for="postalcode">Postal code</label>
+
+                    {% if errors.postal_code %}
+                    <span class="help-block">
+                       {{ errors.postal_code | first }}
+                    </span>
+                    {% endif %}
+
+                    <input type="text" name="postal_code" id="postalcode" class="form-control" value="{{ old.postal_code }}">
+                  </div>
+                </div>
+
+                <!-- Appending Drop-In payment form -->
+                <h3>Payment<h3>
+                <hr>
+                <div id="payment-form">
+                </div>
+          </div>
+          <div class="col-md-4">
+              <div class="well">
+                <h4>Your order</h4>
+                <hr>
+                {% include 'cart/partials/content.twig' %}
+                {% include 'cart/partials/summary.twig' %}
+
+                <button class="btn btn-default" type="submit">Place order</button>
+              </div>
+          </div>
+      </div>
+  </form>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://js.braintreegateway.com/js/braintree-2.25.0.min.js"></script>
+
+<script>
+    $.ajax({
+            url: '{{ path_for('braintree.token') }}',
+            type: 'get',
+            datatype: 'json'
+    })
+    .success(function(CLIENT_TOKEN){
+
+    braintree.setup(CLIENT_TOKEN.token, 'dropin', {
+      container: 'payment-form'
+    });
+});
+
+</script>
+{% endblock %}

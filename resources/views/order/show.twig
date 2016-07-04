@@ -1,0 +1,64 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+      <div class="row">
+         <div class="col-md-12">
+              <div class="alert alert-success alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Payment successful</strong> Thank you for your time, you're one of a kind.
+              </div>
+              <h3>Order #{{ order.id }}</h3>
+              <hr>
+
+              <div class="row">
+                  <div class="col-md-6">
+                      <h4>Shipping to:</h4>
+                      <table class="table">
+                      <tr>
+                      <td>Customer name</td><td>{{ order.customer.name }}</td>
+                      </tr>
+                      <tr>
+                          <td>Address 1</td><td> {{ order.address.address1 | capitalize }} </td>
+                      </tr>
+                      <tr>
+                          <td>Address 2</td><td>
+                          {% if order.address.address2 is empty %}
+                            -
+                          {% endif %}
+                          {{ order.address.address2 | capitalize }}
+                           </td>
+
+                      </tr>
+                      <tr>
+                          <td>City</td><td> {{ order.address.city | capitalize }} </td>
+                      </tr>
+                      <tr>
+                         <td>Postal code</td><td> {{ order.address.postal_code }} </td>
+                      </tr>
+                      </table>
+                  </div>
+                  <div class="col-md-6">
+                      <h4>Items</h4>
+                      {% for product in order.products %}
+                          <a href="{{ path_for('product.get',{'slug': product.slug })}}"> {{ product.title }} </a>(x {{ product.pivot.quantity }})<br/>
+                      {% endfor %}
+                  </div>
+              </div>
+              <div class="row">
+              <div class="col-md-6">
+                <h3>Order cost</h3>
+                <table class="table">
+                <tr>
+                 <td>Shipping cost</td><td>$5.00</td>
+                </tr>
+                <tr>
+                <td><strong>Order total</strong></td><td>${{ order.total | number_format(2) }}</td>
+                </tr>
+                </table>
+              </div>
+              </div>
+
+         </div>
+      </div>
+{%  endblock %}
